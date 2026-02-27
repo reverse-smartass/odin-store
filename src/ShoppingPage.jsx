@@ -1,45 +1,88 @@
-import { useEffect, useState } from 'react'
-import './ShoppingPage.css'
 
-function ShoppingPage() {
-  const [count, setCount] = useState([])
-  const [products, setProducts] = useState([]);
-2
-  useEffect(() => { 
-    fetch('https://fakestoreapi.com/products')
-  .then(response => response.json())
-  .then(data => setProducts(data.map(d => ({...d, quantity: 0}))))
-  products.map(product => setCount(count => [...count, { id: product.id, quantity: 0}]))
-  }, [products.length]);
+import "./ShoppingPage.css";
+import Navbar from "./Navbar";
+
+
+function ShoppingPage({ count, setCount, products, setProducts }) {
+
+  function handleQuantityReplacement(productId, newQuantity) {
+    setCount((prevCount) =>
+      prevCount.map((p) =>
+        p.id === productId ? { ...p, quantity: newQuantity } : p,
+      ),
+    );
+  }
+
+  function handleQuantityChange(productId, newQuantity) {
+    setCount((prevCount) =>
+      prevCount.map((p) =>
+        p.id === productId ? { ...p, quantity: p.quantity + newQuantity } : p,
+      ),
+    );
+  }
 
   return (
     <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button >
-          count is {count.length}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
+      <Navbar />
+
       <div className="product-list">
-        {products.map(product => (
+        {products.map((product) => (
           <div key={product.id} className="product-card">
-            <img src={product.image} alt={product.title} className="product-image"/>
-            <h2 className='product-title'>{product.title}</h2>
+            <img
+              src={product.image}
+              alt={product.title}
+              className="product-image"
+            />
+            <h2 className="product-title">{product.title}</h2>
             <p>${product.price}</p>
-            <div className='product-quantity'>
-              <button onClick={() => setCount(count.map(p => p.id === product.id ? {...p, quantity: Math.max(0, p.quantity - 1)} : p))}>-</button>
-              <input type="number" value={count.find(p => p.id === product.id)?.quantity || 0} min={0} />
-              <button onClick={() => setCount(count.map(p => p.id === product.id ? {...p, quantity: p.quantity + 1} : p))}>+</button>
+            <div className="product-quantity">
+              <button onClick={() => handleQuantityChange(product.id, -1)}>-</button>
+              <input type="number" id={`quantity-${product.id}`}
+                value={count.find((p) => p.id === product.id)?.quantity || 0}
+                min={0}
+                onChange={(e) => {
+                  const amount = parseInt(e.target.value);
+                  if (isNaN(amount) || amount < 0) {
+                    alert("Please enter a valid non-negative number!");
+                    return;
+                  }
+                  handleQuantityReplacement(product.id, amount);
+                }}
+              />
+              <button onClick={() => handleQuantityChange(product.id, 1)}>
+                +
+              </button>
             </div>
-            <div className='product-add'>
-              <button onClick={() => {
-                setProducts(products.map(p => p.id === product.id ? {...p, quantity: count.find(c => c.id === p.id)?.quantity || 0} : p))
-                setCount(count.map(p => p.id === product.id ? {...p, quantity: 0} : p))
-                alert(`Added ${count.find(p => p.id === product.id)?.quantity || 0} of ${product.title} to cart!`)
-              }}>
+            <div className="product-add">
+              <button
+                onClick={() => {
+                  const quantityToAdd =
+                    count.find((p) => p.id === product.id)?.quantity || 0;
+                  if (quantityToAdd === 0) {
+                    alert("Please select a quantity greater than 0!");
+                    return;
+                  }
+                  setProducts((prevProducts) =>
+                    prevProducts.map((p) =>
+                      p.id === product.id
+                        ? {
+                            ...p,
+                            quantity: p.quantity + quantityToAdd,
+                          }
+                        : p,
+                    ),
+                  );
+                  setCount((prevCount) =>
+                    prevCount.map((p) =>
+                      p.id === product.id ? { ...p, quantity: 0 } : p,
+                    ),
+                  );
+                  alert(
+                    `Added ${quantityToAdd} of ${product.title} to cart! Current quantity in cart: ${products.find((p) => p.id === product.id)?.quantity + quantityToAdd || quantityToAdd}`,
+                  );
+                  console.log(products);
+                }}
+              >
                 Add to Cart
               </button>
             </div>
@@ -47,6 +90,7 @@ function ShoppingPage() {
         ))}
       </div>
     </>
-  )}
+  );
+}
 
-export default ShoppingPage
+export default ShoppingPage;

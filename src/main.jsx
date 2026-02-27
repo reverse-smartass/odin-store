@@ -1,10 +1,21 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import ShoppingPage from './ShoppingPage.jsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { createBrowserRouter , RouterProvider} from "react-router";
 
-createRoot(document.getElementById('root')).render(
+const routes = [
+  {
+    path: "/:name",
+    element: <App />,
+  },
+];
+
+const router = createBrowserRouter(routes);
+
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ShoppingPage />
+    <RouterProvider router={router} />
   </StrictMode>,
-)
+);
