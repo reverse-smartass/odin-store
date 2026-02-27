@@ -4,7 +4,7 @@ import './ShoppingPage.css'
 function ShoppingPage() {
   const [count, setCount] = useState([])
   const [products, setProducts] = useState([]);
-
+2
   useEffect(() => { 
     fetch('https://fakestoreapi.com/products')
   .then(response => response.json())
