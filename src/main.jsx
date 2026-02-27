@@ -3,8 +3,13 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { createBrowserRouter , RouterProvider} from "react-router";
+import { Navigate } from "react-router";
 
 const routes = [
+  {
+    path: "/",
+    element: <Navigate to="/home" replace />,
+  },
   {
     path: "/:name",
     element: <App />,

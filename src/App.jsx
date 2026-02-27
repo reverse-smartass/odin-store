@@ -2,8 +2,9 @@ import ShoppingPage from "./ShoppingPage.jsx";
 import CartPage from "./CartPage.jsx";
 import { useState, useEffect } from "react";
 import { useParams} from "react-router";
-import Navbar from "./Navbar.jsx";
+import Navbar, { Spacer } from "./Navbar.jsx";
 import ErrorPage from "./errorpage.jsx";
+import HomePage from "./HomePage.jsx";
 
 /* const router = (count, setCount, products, setProducts) => createBrowserRouter([
     {
@@ -41,17 +42,28 @@ function App() {
 
   const { name } = useParams();
   return (<div>
-      <Navbar />
       {name === "shop" ? (
+        <>
+        <Navbar height={14}/>
         <ShoppingPage
           count={count}
           setCount={setCount}
           products={products}
           setProducts={setProducts}
         />
+        </>
+        
       ) : name === "cart" ? (
+        <>
+        <Navbar height={0}/>
         <CartPage products={products} setProducts={setProducts} />
-      ) : (
+        </>
+      ) : (name === "home" ? (
+        <>
+        <Navbar height={0}/>
+        <HomePage />
+        </>
+      ) :
         <ErrorPage/>
       )}
     </div>)
