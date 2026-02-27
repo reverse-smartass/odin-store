@@ -46,3 +46,12 @@
 .cart-item-title {
   align-self: flex-start;
 }
+
+.cart-item-price {
+  font-weight: bold;
+}
+
+.cart-item-quantity input {
+  width: 50px;
+  text-align: center;
+} 
